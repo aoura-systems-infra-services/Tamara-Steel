@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects & Gallery – Tamara Steel LLC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #1C1C1C;
+      --black2:  #262626;
+      --gold:    #C8A66A;
+      --gold-dim: rgba(200,166,106,0.15);
+      --ivory:   #F5F3EE;
+      --sand:    #D8C7A3;
+      --text-muted: rgba(245,243,238,0.55);
+      --border:  rgba(200,166,106,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--ivory);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* ─── LOADING SCREEN ─── */
+    #loader {
+      position: fixed; inset: 0;
+      background: var(--black);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #loader.hidden { opacity: 0; visibility: hidden; }
+    .loader-logo {
+      width: 80px; height: 80px; margin-bottom: 28px;
+      animation: loaderPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes loaderPulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.95); }
+      50%       { opacity: 1;   transform: scale(1.05); }
+    }
+    .loader-bar {
+      width: 180px; height: 1px;
+      background: rgba(200,166,106,0.2);
+      overflow: hidden;
+    }
+    .loader-bar::after {
+      content: '';
+      display: block; height: 100%; width: 0;
+      background: var(--gold);
+      animation: loadFill 1.8s ease forwards;
+    }
+    @keyframes loadFill { to { width: 100%; } }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 60px;
+      height: 76px;
+      background: rgba(28,28,28,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.4s ease;
+    }
+    nav.scrolled { height: 64px; background: rgba(28,28,28,0.98); }
+
+    .nav-logo img { height: 44px; object-fit: contain; }
+
+    .nav-links { display: flex; gap: 44px; list-style: none; }
+    .nav-links a {
+      color: var(--ivory);
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      transition: opacity 0.3s, color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { opacity: 1; color: var(--gold); }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+
+    .nav-cta {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .nav-cta:hover { background: var(--gold); color: var(--black); }
+
+    /* ─── MOBILE MENU ─── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column; justify-content: center; gap: 5px;
+      background: none; border: none; cursor: pointer;
+      padding: 6px; width: 38px; height: 38px;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 1.5px;
+      background: var(--ivory);
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+    .mobile-menu {
+      position: fixed; top: 0; right: -100%; width: min(300px, 85vw);
+      height: 100vh; height: 100svh;
+      background: #111111;
+      border-left: 1px solid var(--border);
+      z-index: 200;
+      padding: 80px 32px 40px;
+      display: flex; flex-direction: column;
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mobile-menu.open { right: 0; }
+    .mobile-menu-close {
+      position: absolute; top: 20px; right: 20px;
+      background: none; border: none; color: var(--text-muted);
+      font-size: 18px; cursor: pointer; padding: 8px; line-height: 1;
+      transition: color 0.2s;
+    }
+    .mobile-menu-close:hover { color: var(--gold); }
+    .mobile-menu ul { list-style: none; display: flex; flex-direction: column; gap: 0; }
+    .mobile-menu ul li a {
+      display: block;
+      color: var(--ivory);
+      text-decoration: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 300;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(200,166,106,0.12);
+      transition: color 0.3s, padding-left 0.3s;
+    }
+    .mobile-menu ul li:last-child a { border-bottom: none; }
+    .mobile-menu ul li a:hover { color: var(--gold); padding-left: 8px; }
+
+    .mobile-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 199;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(2px);
+    }
+    .mobile-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* ─── PAGE HERO ─── */
+    .page-hero {
+      padding-top: 76px;
+      min-height: 380px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding-bottom: 72px;
+      padding-left: 60px; padding-right: 60px;
+      position: relative;
+      overflow: hidden;
+      background: var(--black2);
+      border-bottom: 1px solid var(--border);
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent, transparent 80px,
+        rgba(200,166,106,0.025) 80px,
+        rgba(200,166,106,0.025) 81px
+      );
+    }
+    .page-hero-bg-num {
+      position: absolute;
+      right: 60px; bottom: -20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(120px, 18vw, 220px);
+      font-weight: 300;
+      color: rgba(200,166,106,0.05);
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+    .page-hero-content { position: relative; z-index: 2; }
+    .page-hero-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 14px;
+      opacity: 0; animation: fadeUp 0.8s 0.3s ease forwards;
+    }
+    .page-hero-eyebrow::before {
+      content: ''; display: inline-block;
+      width: 30px; height: 1px; background: var(--gold);
+    }
+    .page-hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(44px, 6vw, 80px);
+      font-weight: 300;
+      line-height: 1.06;
+      color: var(--ivory);
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.8s 0.5s ease forwards;
+    }
+    .page-hero h1 em { font-style: italic; color: var(--gold); }
+    .page-hero-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 560px;
+      line-height: 1.85;
+      opacity: 0; animation: fadeUp 0.8s 0.7s ease forwards;
+    }
+
+    /* ─── SHARED SECTION ─── */
+    section { padding: 100px 60px; }
+
+    .section-tag {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .section-tag::before {
+      content: '';
+      display: inline-block;
+      width: 30px; height: 1px;
+      background: var(--gold);
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(34px, 3.5vw, 52px);
+      font-weight: 300;
+      line-height: 1.12;
+      color: var(--ivory);
+      margin-bottom: 20px;
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+    .divider {
+      width: 60px; height: 1px;
+      background: var(--gold);
+      margin-bottom: 36px;
+      opacity: 0.6;
+    }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      background: var(--black);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 60px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 0 20px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ─── FILTER BAR ─── */
+    .filter-bar {
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 52px;
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 9px 20px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .filter-btn:hover { border-color: var(--gold); color: var(--ivory); }
+    .filter-btn.active { background: var(--gold); border-color: var(--gold); color: var(--black); }
+
+    /* ─── COLLAGE GRID ─── */
+    #gallery { background: var(--black2); }
+
+    .collage-grid {
+      columns: 3;
+      column-gap: 3px;
+    }
+    .collage-item {
+      break-inside: avoid;
+      margin-bottom: 3px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--black);
+    }
+    .collage-item img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.6s ease;
+      object-fit: cover;
+    }
+    .collage-item:hover img { transform: scale(1.04); }
+    .collage-item-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(28,28,28,0.92) 0%, rgba(28,28,28,0.3) 50%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 24px 22px;
+    }
+    .collage-item:hover .collage-item-overlay { opacity: 1; }
+    .collage-item-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--ivory);
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+    .collage-item-client {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    /* Tall / featured items */
+    .collage-item.tall img { aspect-ratio: 3/4; object-fit: cover; }
+    .collage-item.wide img { aspect-ratio: 16/9; object-fit: cover; }
+    .collage-item.square img { aspect-ratio: 1/1; object-fit: cover; }
+
+    /* Placeholder when no image yet */
+    .collage-placeholder {
+      width: 100%;
+      background: var(--black);
+      border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      gap: 12px;
+    }
+    .collage-placeholder svg { opacity: 0.2; }
+    .collage-placeholder-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ─── PROJECT LIST ─── */
+    #project-list { background: var(--black); }
+    .project-index {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+    .pi-item {
+      padding: 28px 28px;
+      border: 1px solid transparent;
+      background: rgba(200,166,106,0.02);
+      display: flex; align-items: flex-start; gap: 20px;
+      transition: border-color 0.3s, background 0.3s;
+      position: relative;
+    }
+    .pi-item::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--gold);
+      transition: width 0.4s ease;
+    }
+    .pi-item:hover { border-color: var(--border); background: rgba(200,166,106,0.06); }
+    .pi-item:hover::before { width: 100%; }
+    .pi-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      color: rgba(200,166,106,0.18);
+      line-height: 1;
+      flex-shrink: 0;
+      width: 36px;
+    }
+    .pi-text {}
+    .pi-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 19px;
+      color: var(--ivory);
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .pi-client {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .pi-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .pi-tag {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      margin-top: 10px;
+    }
+
+    /* ─── CONTACT STRIP ─── */
+    .contact-strip {
+      background: var(--gold);
+      padding: 64px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 40px;
+    }
+    .contact-strip-text h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px; font-weight: 400;
+      color: var(--black); line-height: 1.2;
+    }
+    .contact-strip-text p {
+      font-size: 13px;
+      color: rgba(28,28,28,0.65);
+      margin-top: 8px;
+    }
+    .btn-dark {
+      background: var(--black);
+      color: var(--ivory);
+      border: 1px solid var(--black);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 14px 36px;
+      cursor: pointer; text-decoration: none;
+      display: inline-block; white-space: nowrap;
+      transition: background 0.3s, color 0.3s;
+      flex-shrink: 0;
+    }
+    .btn-dark:hover { background: var(--black2); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #111111;
+      border-top: 1px solid var(--border);
+      padding: 60px 60px 36px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 52px;
+    }
+    .footer-logo img { height: 40px; object-fit: contain; margin-bottom: 20px; }
+    .footer-tagline {
+      font-size: 13px; color: var(--text-muted);
+      line-height: 1.75; max-width: 240px;
+    }
+    .footer-col h4 {
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a {
+      font-size: 13px; color: var(--text-muted);
+      text-decoration: none; transition: color 0.3s;
+    }
+    .footer-col ul li a:hover { color: var(--ivory); }
+    .footer-contact { display: flex; flex-direction: column; gap: 12px; }
+    .footer-contact-row { display: flex; gap: 10px; font-size: 13px; }
+    .footer-contact-row .lbl {
+      color: var(--gold); font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; min-width: 50px; padding-top: 3px;
+    }
+    .footer-contact-row .val { color: var(--text-muted); line-height: 1.6; }
+    .footer-contact-row a { color: var(--text-muted); text-decoration: none; }
+    .footer-contact-row a:hover { color: var(--gold); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 28px;
+      border-top: 1px solid rgba(200,166,106,0.12);
+      font-size: 11px; color: rgba(245,243,238,0.3);
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── LIGHTBOX ─── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 9998;
+      background: rgba(0,0,0,0.92);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(6px);
+    }
+    .lightbox.open { opacity: 1; pointer-events: all; }
+    .lightbox-inner {
+      position: relative;
+      max-width: 90vw; max-height: 90vh;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .lightbox-inner img {
+      max-width: 100%; max-height: 80vh;
+      object-fit: contain;
+      display: block;
+    }
+    .lightbox-caption {
+      margin-top: 20px; text-align: center;
+    }
+    .lightbox-caption-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; color: var(--ivory);
+    }
+    .lightbox-caption-client {
+      font-size: 11px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--gold);
+      margin-top: 4px;
+    }
+    .lightbox-close {
+      position: absolute; top: -40px; right: -8px;
+      background: none; border: none;
+      color: var(--text-muted); font-size: 22px;
+      cursor: pointer; line-height: 1; padding: 8px;
+      transition: color 0.2s;
+    }
+    .lightbox-close:hover { color: var(--gold); }
+    .lightbox-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: none; border: 1px solid var(--border);
+      color: var(--text-muted); font-size: 20px;
+      cursor: pointer; padding: 12px 16px; line-height: 1;
+      transition: all 0.2s; z-index: 2;
+    }
+    .lightbox-nav:hover { border-color: var(--gold); color: var(--gold); }
+    .lightbox-prev { left: -60px; }
+    .lightbox-next { right: -60px; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── RESPONSIVE 900px ─── */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; height: 68px; }
+      nav.scrolled { height: 58px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      .page-hero { padding: 76px 20px 56px; min-height: 300px; }
+      .page-hero-bg-num { display: none; }
+      section { padding: 72px 20px; }
+      .stats-bar { grid-template-columns: repeat(2,1fr); padding: 32px 20px; gap: 0; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 20px 12px; }
+      .stat-item:nth-child(odd) { border-right: 1px solid var(--border); }
+      .stat-item:nth-child(3), .stat-item:nth-child(4) { border-bottom: none; }
+      .collage-grid { columns: 2; }
+      .project-index { grid-template-columns: 1fr; }
+      .contact-strip { flex-direction: column; gap: 24px; padding: 44px 20px; }
+      .contact-strip-text h2 { font-size: 26px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+      footer { padding: 48px 20px 28px; }
+      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+      .lightbox-nav { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      nav { padding: 0 16px; height: 62px; }
+      .nav-logo img { height: 46px !important; }
+      .page-hero { padding: 72px 16px 48px; }
+      .page-hero h1 { font-size: clamp(36px, 10vw, 56px); }
+      section { padding: 56px 16px; }
+      .section-title { font-size: clamp(28px, 8vw, 40px); }
+      .stats-bar { padding: 24px 16px; }
+      .stat-num { font-size: 30px; }
+      .collage-grid { columns: 1; }
+      .pi-item { flex-direction: column; gap: 8px; }
+      .pi-num { font-size: 24px; }
+      .contact-strip { padding: 36px 16px; }
+      .btn-dark { width: 100%; text-align: center; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      footer { padding: 40px 16px 24px; }
+      .footer-bottom { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <svg class="loader-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="8" y="8" width="64" height="64" fill="#262626" stroke="#C8A66A" stroke-width="1"/>
+    <g transform="translate(40,40) rotate(45)">
+      <rect x="-22" y="-22" width="14" height="14" fill="#C8A66A" opacity="0.9"/>
+      <rect x="-6"  y="-22" width="14" height="14" fill="#C8A66A" opacity="0.65"/>
+      <rect x="8"   y="-22" width="14" height="14" fill="#C8A66A" opacity="0.4"/>
+      <rect x="-22" y="-6"  width="14" height="14" fill="#E0E0E0" opacity="0.8"/>
+      <rect x="-6"  y="-6"  width="14" height="14" fill="#C8A66A" opacity="0.75"/>
+      <rect x="8"   y="-6"  width="14" height="14" fill="#E0E0E0" opacity="0.55"/>
+      <rect x="-22" y="8"   width="14" height="14" fill="#C8A66A" opacity="0.5"/>
+      <rect x="-6"  y="8"   width="14" height="14" fill="#E0E0E0" opacity="0.7"/>
+      <rect x="8"   y="8"   width="14" height="14" fill="#C8A66A" opacity="0.3"/>
+    </g>
+  </svg>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo" style="text-decoration:none;">
+    <img src="TAMARA_STEEL_LLC.png" alt="Tamara Steel LLC" style="height:60px;width:auto;" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="product.html" class="active">Projects / Gallery</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:dubai@tamarasteel.com" class="nav-cta">Get In Touch</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileClose" aria-label="Close menu">✕</button>
+  <ul>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="product.html">Projects / Gallery</a></li>
+    <li><a href="index.html#contact">Get In Touch</a></li>
+  </ul>
+</div>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-bg-num">Works</div>
+  <div class="page-hero-content">
+    <p class="page-hero-eyebrow">Projects &amp; Gallery &nbsp;&nbsp;·&nbsp;&nbsp; Dubai &amp; Sharjah, UAE</p>
+    <h1>Our<br><em>Portfolio</em></h1>
+    <p class="page-hero-desc">A curated showcase of structural steel projects delivered across the UAE — from solar carports and community parks to residential developments and industrial facilities.</p>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num">15+</div>
+    <div class="stat-label">Projects Completed</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">8+</div>
+    <div class="stat-label">Major Clients</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">2</div>
+    <div class="stat-label">UAE Emirates</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">2023</div>
+    <div class="stat-label">Established</div>
+  </div>
+</div>
+
+<!-- GALLERY COLLAGE -->
+<section id="gallery">
+  <div class="section-tag">Photo Gallery</div>
+  <h2 class="section-title">Project<br><em>Showcase</em></h2>
+  <div class="divider"></div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All Projects</button>
+    <button class="filter-btn" data-filter="solar">Solar Structures</button>
+    <button class="filter-btn" data-filter="residential">Residential</button>
+    <button class="filter-btn" data-filter="civic">Civic &amp; Parks</button>
+    <button class="filter-btn" data-filter="industrial">Industrial</button>
+  </div>
+
+  <div class="collage-grid" id="collageGrid">
+
+    <!-- 01 - Mohammed Bin Rashid Library Solar Carport -->
+    <div class="collage-item tall reveal" data-category="solar" data-name="Mohammed Bin Rashid Library — Solar Carport" data-client="Dubai Municipality" onclick="openLightbox(0)">
+      <img src="product_images/mbr_library_solar_carport.jpg" alt="Mohammed Bin Rashid Library Solar Carport"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Mohammed Bin Rashid Library — Solar Carport', 'Dubai Municipality')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Mohammed Bin Rashid Library — Solar Carport</div>
+        <div class="collage-item-client">Dubai Municipality</div>
+      </div>
+    </div>
+
+    <!-- 02 - DEWA 2MW Solar Carport -->
+    <div class="collage-item wide reveal" data-category="solar" data-name="2MW Solar Carport — DEWA HQ" data-client="DEWA" onclick="openLightbox(1)">
+      <img src="product_images/dewa_solar_carport_2mw.jpg" alt="2MW Solar Carport DEWA HQ"
+           onerror="this.parentElement.innerHTML = placeholderHTML('2MW Solar Carport — DEWA HQ', 'DEWA')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">2MW Solar Carport — DEWA HQ</div>
+        <div class="collage-item-client">DEWA</div>
+      </div>
+    </div>
+
+    <!-- 03 - Al Quoz Community Park Solar Structure -->
+    <div class="collage-item square reveal" data-category="solar civic" data-name="Solar Structure — Al Quoz Community Park" data-client="Dubai Municipality" onclick="openLightbox(2)">
+      <img src="product_images/al_quoz_community_park_solar.jpg" alt="Al Quoz Community Park Solar Structure"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Solar Structure — Al Quoz Community Park', 'Dubai Municipality')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Solar Structure — Al Quoz Community Park</div>
+        <div class="collage-item-client">Dubai Municipality</div>
+      </div>
+    </div>
+
+    <!-- 04 - Oud Al Mutina Solar Shade -->
+    <div class="collage-item wide reveal" data-category="solar civic" data-name="Solar Shade — Oud Al Mutina Community Park" data-client="Dubai Municipality" onclick="openLightbox(3)">
+      <img src="product_images/oud_al_mutina_solar_shade.jpg" alt="Solar Shade Oud Al Mutina"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Solar Shade — Oud Al Mutina Community Park', 'Dubai Municipality')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Solar Shade — Oud Al Mutina Community Park</div>
+        <div class="collage-item-client">Dubai Municipality</div>
+      </div>
+    </div>
+
+    <!-- 05 - Naad Al Sheba Park -->
+    <div class="collage-item square reveal" data-category="solar civic" data-name="Solar Structure — Naad Al Sheba Park" data-client="Dubai Municipality" onclick="openLightbox(4)">
+      <img src="product_images/naad_al_sheba_solar_structure.jpg" alt="Solar Structure Naad Al Sheba Park"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Solar Structure — Naad Al Sheba Park', 'Dubai Municipality')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Solar Structure — Naad Al Sheba Park</div>
+        <div class="collage-item-client">Dubai Municipality</div>
+      </div>
+    </div>
+
+    <!-- 06 - Al Barsha Park Solar Carpark -->
+    <div class="collage-item tall reveal" data-category="solar civic" data-name="Solar Carpark — Al Barsha Park" data-client="Dubai Municipality" onclick="openLightbox(5)">
+      <img src="product_images/al_barsha_park_solar_carpark.jpg" alt="Solar Carpark Al Barsha Park"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Solar Carpark — Al Barsha Park', 'Dubai Municipality')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Solar Carpark — Al Barsha Park</div>
+        <div class="collage-item-client">Dubai Municipality</div>
+      </div>
+    </div>
+
+    <!-- 07 - Toilet Block Arjan Phase 1 -->
+    <div class="collage-item square reveal" data-category="residential" data-name="Toilet Block — Arjan Phase 1" data-client="Dubai Holdings" onclick="openLightbox(6)">
+      <img src="product_images/toilet_block_arjan_phase1.jpg" alt="Toilet Block Arjan Phase 1"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Toilet Block — Arjan Phase 1', 'Dubai Holdings')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Toilet Block — Arjan Phase 1</div>
+        <div class="collage-item-client">Dubai Holdings</div>
+      </div>
+    </div>
+
+    <!-- 08 - Damac Hills Toilet Blocks -->
+    <div class="collage-item wide reveal" data-category="residential" data-name="Toilet Blocks — Damac Hills (Akoya Oxygen)" data-client="DAMAC Properties" onclick="openLightbox(7)">
+      <img src="product_images/damac_hills_toilet_blocks.jpg" alt="Damac Hills Toilet Blocks"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Toilet Blocks — Damac Hills (Akoya Oxygen)', 'DAMAC Properties')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Toilet Blocks — Damac Hills (Akoya Oxygen)</div>
+        <div class="collage-item-client">DAMAC Properties</div>
+      </div>
+    </div>
+
+    <!-- 09 - Toilet Block North 25 -->
+    <div class="collage-item square reveal" data-category="residential" data-name="Toilet Block — North 25" data-client="North 25" onclick="openLightbox(8)">
+      <img src="product_images/toilet_block_north25.jpg" alt="Toilet Block North 25"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Toilet Block — North 25', 'North 25')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Toilet Block — North 25</div>
+        <div class="collage-item-client">North 25</div>
+      </div>
+    </div>
+
+    <!-- 10 - Unified Masjid DP World -->
+    <div class="collage-item tall reveal" data-category="industrial" data-name="Unified Masjid" data-client="DP World" onclick="openLightbox(9)">
+      <img src="product_images/unified_masjid_dp_world.jpg" alt="Unified Masjid DP World"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Unified Masjid', 'DP World')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Unified Masjid</div>
+        <div class="collage-item-client">DP World</div>
+      </div>
+    </div>
+
+    <!-- 11 - The Valley Phase 1A -->
+    <div class="collage-item wide reveal" data-category="residential" data-name="The Valley — Phase 1A" data-client="EMAAR" onclick="openLightbox(10)">
+      <img src="product_images/the_valley_phase_1a.jpg" alt="The Valley Phase 1A EMAAR"
+           onerror="this.parentElement.innerHTML = placeholderHTML('The Valley — Phase 1A', 'EMAAR')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">The Valley — Phase 1A</div>
+        <div class="collage-item-client">EMAAR</div>
+      </div>
+    </div>
+
+    <!-- 12 - The Valley Phase 1B -->
+    <div class="collage-item square reveal" data-category="residential" data-name="The Valley — Phase 1B" data-client="EMAAR" onclick="openLightbox(11)">
+      <img src="product_images/the_valley_phase_1b.jpg" alt="The Valley Phase 1B EMAAR"
+           onerror="this.parentElement.innerHTML = placeholderHTML('The Valley — Phase 1B', 'EMAAR')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">The Valley — Phase 1B</div>
+        <div class="collage-item-client">EMAAR</div>
+      </div>
+    </div>
+
+    <!-- 13 - The Valley Phase 1C -->
+    <div class="collage-item wide reveal" data-category="residential" data-name="The Valley — Phase 1C" data-client="EMAAR" onclick="openLightbox(12)">
+      <img src="product_images/the_valley_phase_1c.jpg" alt="The Valley Phase 1C EMAAR"
+           onerror="this.parentElement.innerHTML = placeholderHTML('The Valley — Phase 1C', 'EMAAR')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">The Valley — Phase 1C</div>
+        <div class="collage-item-client">EMAAR</div>
+      </div>
+    </div>
+
+    <!-- 14 - Al Zahia Camelia & Orchid -->
+    <div class="collage-item tall reveal" data-category="residential" data-name="Al Zahia — Camelia &amp; Orchid" data-client="Majid Al Futtaim Properties" onclick="openLightbox(13)">
+      <img src="product_images/al_zahia_camelia_orchid.jpg" alt="Al Zahia Camelia and Orchid"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Al Zahia — Camelia &amp; Orchid', 'Majid Al Futtaim Properties')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Al Zahia — Camelia &amp; Orchid</div>
+        <div class="collage-item-client">Majid Al Futtaim Properties</div>
+      </div>
+    </div>
+
+    <!-- 15 - Arabian Ranches 3 -->
+    <div class="collage-item wide reveal" data-category="residential" data-name="Arabian Ranches 3 Development" data-client="EMAAR" onclick="openLightbox(14)">
+      <img src="product_images/arabian_ranches_3.jpg" alt="Arabian Ranches 3 Development"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Arabian Ranches 3 Development', 'EMAAR')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Arabian Ranches 3 Development</div>
+        <div class="collage-item-client">EMAAR</div>
+      </div>
+    </div>
+
+    <!-- 16 - Gate 1 Hamriya Port -->
+    <div class="collage-item square reveal" data-category="industrial" data-name="Gate 1 Development — Hamriya Port" data-client="DP World" onclick="openLightbox(15)">
+      <img src="product_images/gate1_hamriya_port.jpg" alt="Gate 1 Development Hamriya Port"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Gate 1 Development — Hamriya Port', 'DP World')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Gate 1 Development — Hamriya Port</div>
+        <div class="collage-item-client">DP World</div>
+      </div>
+    </div>
+
+    <!-- 17 - Al Ghusais Park Tensile Shade -->
+    <div class="collage-item wide reveal" data-category="civic" data-name="Tensile Shade — Al Ghusais Park" data-client="Dubai Municipality" onclick="openLightbox(16)">
+      <img src="product_images/al_ghusais_park_tensile_shade.jpg" alt="Tensile Shade Al Ghusais Park"
+           onerror="this.parentElement.innerHTML = placeholderHTML('Tensile Shade — Al Ghusais Park', 'Dubai Municipality')" />
+      <div class="collage-item-overlay">
+        <div class="collage-item-name">Tensile Shade — Al Ghusais Park</div>
+        <div class="collage-item-client">Dubai Municipality</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECT INDEX LIST -->
+<section id="project-list">
+  <div class="section-tag">Complete Index</div>
+  <h2 class="section-title">All<br><em>Projects</em></h2>
+  <div class="divider"></div>
+
+  <div class="project-index">
+
+    <div class="pi-item reveal">
+      <div class="pi-num">01</div>
+      <div class="pi-text">
+        <div class="pi-name">Mohammed Bin Rashid Library — Solar Carport</div>
+        <div class="pi-client">Dubai Municipality</div>
+        <div class="pi-desc">Large-scale solar carport structure fabricated and installed at the Mohammed Bin Rashid Library, Dubai.</div>
+        <span class="pi-tag">Solar Structures</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">02</div>
+      <div class="pi-text">
+        <div class="pi-name">2MW Solar Carport Project at DEWA HQ</div>
+        <div class="pi-client">DEWA (Dubai Electricity &amp; Water Authority)</div>
+        <div class="pi-desc">2-megawatt solar carport structure at DEWA headquarters, one of the region's largest solar carport installations.</div>
+        <span class="pi-tag">Solar Structures</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">03</div>
+      <div class="pi-text">
+        <div class="pi-name">Solar Structure — Al Quoz Community Park</div>
+        <div class="pi-client">Dubai Municipality</div>
+        <div class="pi-desc">Solar shade and structural steel installation within Al Quoz Community Park.</div>
+        <span class="pi-tag">Solar · Civic</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">04</div>
+      <div class="pi-text">
+        <div class="pi-name">Solar Shade — Oud Al Mutina Community Park</div>
+        <div class="pi-client">Dubai Municipality</div>
+        <div class="pi-desc">Structural solar shade canopy designed and fabricated for Oud Al Mutina Community Park.</div>
+        <span class="pi-tag">Solar · Civic</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">05</div>
+      <div class="pi-text">
+        <div class="pi-name">Solar Structure — Naad Al Sheba Park</div>
+        <div class="pi-client">Dubai Municipality</div>
+        <div class="pi-desc">Solar steel structure installed at Naad Al Sheba Park, Dubai.</div>
+        <span class="pi-tag">Solar · Civic</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">06</div>
+      <div class="pi-text">
+        <div class="pi-name">Solar Carpark — Al Barsha Park</div>
+        <div class="pi-client">Dubai Municipality</div>
+        <div class="pi-desc">Solar carpark canopy structure fabricated and erected at Al Barsha Park.</div>
+        <span class="pi-tag">Solar Structures</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">07</div>
+      <div class="pi-text">
+        <div class="pi-name">Toilet Block — Arjan Phase 1</div>
+        <div class="pi-client">Dubai Holdings</div>
+        <div class="pi-desc">Prefabricated steel toilet block structures designed and installed across the Arjan Phase 1 development.</div>
+        <span class="pi-tag">Residential</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">08</div>
+      <div class="pi-text">
+        <div class="pi-name">Toilet Blocks — Damac Hills (Akoya Oxygen)</div>
+        <div class="pi-client">DAMAC Properties</div>
+        <div class="pi-desc">Multiple steel toilet block units delivered at various locations within Damac Hills (Akoya Oxygen).</div>
+        <span class="pi-tag">Residential</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">09</div>
+      <div class="pi-text">
+        <div class="pi-name">Toilet Block — North 25</div>
+        <div class="pi-client">North 25</div>
+        <div class="pi-desc">Steel toilet block fabrication and installation for the North 25 project.</div>
+        <span class="pi-tag">Residential</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">10</div>
+      <div class="pi-text">
+        <div class="pi-name">Unified Masjid</div>
+        <div class="pi-client">DP World</div>
+        <div class="pi-desc">Structural steel fabrication and erection for a unified masjid facility within DP World's premises.</div>
+        <span class="pi-tag">Industrial</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">11</div>
+      <div class="pi-text">
+        <div class="pi-name">The Valley — Phase 1A, 1B &amp; 1C</div>
+        <div class="pi-client">EMAAR</div>
+        <div class="pi-desc">Multi-phase structural steel work across three phases of EMAAR's The Valley master development.</div>
+        <span class="pi-tag">Residential</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">12</div>
+      <div class="pi-text">
+        <div class="pi-name">Al Zahia — Camelia &amp; Orchid</div>
+        <div class="pi-client">Majid Al Futtaim Properties</div>
+        <div class="pi-desc">Structural steel fabrication for the Camelia and Orchid clusters within the Al Zahia community, Sharjah.</div>
+        <span class="pi-tag">Residential</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">13</div>
+      <div class="pi-text">
+        <div class="pi-name">Arabian Ranches 3 Development</div>
+        <div class="pi-client">EMAAR</div>
+        <div class="pi-desc">Structural steel components fabricated and supplied for EMAAR's Arabian Ranches 3 development.</div>
+        <span class="pi-tag">Residential</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">14</div>
+      <div class="pi-text">
+        <div class="pi-name">Gate 1 Development — Hamriya Port</div>
+        <div class="pi-client">DP World</div>
+        <div class="pi-desc">Steel fabrication and structural works for the Gate 1 development at Hamriya Port.</div>
+        <span class="pi-tag">Industrial</span>
+      </div>
+    </div>
+
+    <div class="pi-item reveal">
+      <div class="pi-num">15</div>
+      <div class="pi-text">
+        <div class="pi-name">Tensile Shade — Al Ghusais Park</div>
+        <div class="pi-client">Dubai Municipality</div>
+        <div class="pi-desc">Tensile shade steel support structures fabricated and installed at Al Ghusais Park, Dubai.</div>
+        <span class="pi-tag">Civic &amp; Parks</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightboxOnBg(event)">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <button class="lightbox-nav lightbox-prev" onclick="shiftLightbox(-1)">&#8592;</button>
+    <button class="lightbox-nav lightbox-next" onclick="shiftLightbox(1)">&#8594;</button>
+    <img id="lightboxImg" src="" alt="" />
+    <div class="lightbox-caption">
+      <div class="lightbox-caption-name" id="lightboxName"></div>
+      <div class="lightbox-caption-client" id="lightboxClient"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT STRIP -->
+<div class="contact-strip">
+  <div class="contact-strip-text">
+    <h2>Ready to start your next project?</h2>
+    <p>Our team is ready to bring your structural vision to life.</p>
+  </div>
+  <a href="mailto:dubai@tamarasteel.com" class="btn-dark">Contact Us Today</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">
+        <img src="TAMARA_STEEL_LLC.png" alt="Tamara Steel LLC" />
+      </div>
+      <p class="footer-tagline">Premium structural steel fabrication across Dubai and Sharjah. Built on precision, delivered with integrity.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="product.html">Products / Gallery</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Project Types</h4>
+      <ul>
+        <li><a href="#gallery">Solar Structures</a></li>
+        <li><a href="#gallery">Residential Works</a></li>
+        <li><a href="#gallery">Civic &amp; Parks</a></li>
+        <li><a href="#gallery">Industrial Projects</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="footer-contact">
+        <div class="footer-contact-row">
+          <span class="lbl">Email</span>
+          <span class="val"><a href="mailto:dubai@tamarasteel.com">dubai@tamarasteel.com</a></span>
+        </div>
+        <div class="footer-contact-row">
+          <span class="lbl">UAE</span>
+          <span class="val">United Arab Emirates</span>
+        </div>
+        <div class="footer-contact-row">
+          <span class="lbl">Est.</span>
+          <span class="val">2023</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Tamara Steel LLC. All rights reserved.</span>
+    <span>Dubai &nbsp;·&nbsp; Sharjah &nbsp;·&nbsp; UAE</span>
+  </div>
+</footer>
+
+<script>
+  // Loader
+  window.addEventListener('load', () => {
+    setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1800);
+  });
+
+  // Nav scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Mobile menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  const mobileClose = document.getElementById('mobileClose');
+
+  function openMenu() {
+    mobileMenu.classList.add('open');
+    mobileOverlay.classList.add('open');
+    hamburger.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    mobileMenu.classList.remove('open');
+    mobileOverlay.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  hamburger.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileOverlay.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Filter
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.collage-item').forEach(item => {
+        if (filter === 'all' || item.dataset.category.includes(filter)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Placeholder for missing images
+  function placeholderHTML(name, client) {
+    return `<div class="collage-placeholder" style="aspect-ratio:4/3">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <rect x="2" y="2" width="36" height="36" stroke="#C8A66A" stroke-width="1"/>
+        <path d="M8 28L16 18L22 24L28 16L36 28H8Z" stroke="#C8A66A" stroke-width="1" fill="none"/>
+        <circle cx="14" cy="14" r="3" stroke="#C8A66A" stroke-width="1"/>
+      </svg>
+      <div class="collage-item-overlay" style="opacity:1">
+        <div class="collage-item-name">${name}</div>
+        <div class="collage-item-client">${client}</div>
+      </div>
+      <div class="collage-placeholder-label">Image coming soon</div>
+    </div>`;
+  }
+
+  // Lightbox
+  const projects = [
+    { img: 'product_images/mbr_library_solar_carport.jpg', name: 'Mohammed Bin Rashid Library — Solar Carport', client: 'Dubai Municipality' },
+    { img: 'product_images/dewa_solar_carport_2mw.jpg', name: '2MW Solar Carport — DEWA HQ', client: 'DEWA' },
+    { img: 'product_images/al_quoz_community_park_solar.jpg', name: 'Solar Structure — Al Quoz Community Park', client: 'Dubai Municipality' },
+    { img: 'product_images/oud_al_mutina_solar_shade.jpg', name: 'Solar Shade — Oud Al Mutina Community Park', client: 'Dubai Municipality' },
+    { img: 'product_images/naad_al_sheba_solar_structure.jpg', name: 'Solar Structure — Naad Al Sheba Park', client: 'Dubai Municipality' },
+    { img: 'product_images/al_barsha_park_solar_carpark.jpg', name: 'Solar Carpark — Al Barsha Park', client: 'Dubai Municipality' },
+    { img: 'product_images/toilet_block_arjan_phase1.jpg', name: 'Toilet Block — Arjan Phase 1', client: 'Dubai Holdings' },
+    { img: 'product_images/damac_hills_toilet_blocks.jpg', name: 'Toilet Blocks — Damac Hills (Akoya Oxygen)', client: 'DAMAC Properties' },
+    { img: 'product_images/toilet_block_north25.jpg', name: 'Toilet Block — North 25', client: 'North 25' },
+    { img: 'product_images/unified_masjid_dp_world.jpg', name: 'Unified Masjid', client: 'DP World' },
+    { img: 'product_images/the_valley_phase_1a.jpg', name: 'The Valley — Phase 1A', client: 'EMAAR' },
+    { img: 'product_images/the_valley_phase_1b.jpg', name: 'The Valley — Phase 1B', client: 'EMAAR' },
+    { img: 'product_images/the_valley_phase_1c.jpg', name: 'The Valley — Phase 1C', client: 'EMAAR' },
+    { img: 'product_images/al_zahia_camelia_orchid.jpg', name: 'Al Zahia — Camelia & Orchid', client: 'Majid Al Futtaim Properties' },
+    { img: 'product_images/arabian_ranches_3.jpg', name: 'Arabian Ranches 3 Development', client: 'EMAAR' },
+    { img: 'product_images/gate1_hamriya_port.jpg', name: 'Gate 1 Development — Hamriya Port', client: 'DP World' },
+    { img: 'product_images/al_ghusais_park_tensile_shade.jpg', name: 'Tensile Shade — Al Ghusais Park', client: 'Dubai Municipality' },
+  ];
+
+  let currentIndex = 0;
+
+  function openLightbox(index) {
+    currentIndex = index;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function updateLightbox() {
+    const p = projects[currentIndex];
+    document.getElementById('lightboxImg').src = p.img;
+    document.getElementById('lightboxImg').alt = p.name;
+    document.getElementById('lightboxName').textContent = p.name;
+    document.getElementById('lightboxClient').textContent = p.client;
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeLightboxOnBg(e) {
+    if (e.target === document.getElementById('lightbox')) closeLightbox();
+  }
+
+  function shiftLightbox(dir) {
+    currentIndex = (currentIndex + dir + projects.length) % projects.length;
+    updateLightbox();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') shiftLightbox(1);
+    if (e.key === 'ArrowLeft') shiftLightbox(-1);
+  });
+</script>
+</body>
+</html>
