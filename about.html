@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us – Tamara Steel LLC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #1C1C1C;
+      --black2:  #262626;
+      --gold:    #C8A66A;
+      --gold-dim: rgba(200,166,106,0.15);
+      --ivory:   #F5F3EE;
+      --sand:    #D8C7A3;
+      --text-muted: rgba(245,243,238,0.55);
+      --border:  rgba(200,166,106,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--ivory);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* ─── LOADING SCREEN ─── */
+    #loader {
+      position: fixed; inset: 0;
+      background: var(--black);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #loader.hidden { opacity: 0; visibility: hidden; }
+    .loader-logo {
+      width: 80px; height: 80px; margin-bottom: 28px;
+      animation: loaderPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes loaderPulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.95); }
+      50%       { opacity: 1;   transform: scale(1.05); }
+    }
+    .loader-bar {
+      width: 180px; height: 1px;
+      background: rgba(200,166,106,0.2);
+      overflow: hidden;
+    }
+    .loader-bar::after {
+      content: '';
+      display: block; height: 100%; width: 0;
+      background: var(--gold);
+      animation: loadFill 1.8s ease forwards;
+    }
+    @keyframes loadFill { to { width: 100%; } }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 60px;
+      height: 76px;
+      background: rgba(28,28,28,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      transition: all 0.4s ease;
+    }
+    nav.scrolled { height: 64px; background: rgba(28,28,28,0.98); }
+
+    .nav-logo img { height: 44px; object-fit: contain; }
+
+    .nav-links { display: flex; gap: 44px; list-style: none; }
+    .nav-links a {
+      color: var(--ivory);
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      transition: opacity 0.3s, color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { opacity: 1; color: var(--gold); }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+
+    .nav-cta {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .nav-cta:hover { background: var(--gold); color: var(--black); }
+
+    /* ─── MOBILE MENU ─── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column; justify-content: center; gap: 5px;
+      background: none; border: none; cursor: pointer;
+      padding: 6px; width: 38px; height: 38px;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 1.5px;
+      background: var(--ivory);
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+    .mobile-menu {
+      position: fixed; top: 0; right: -100%; width: min(300px, 85vw);
+      height: 100vh; height: 100svh;
+      background: #111111;
+      border-left: 1px solid var(--border);
+      z-index: 200;
+      padding: 80px 32px 40px;
+      display: flex; flex-direction: column;
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mobile-menu.open { right: 0; }
+    .mobile-menu-close {
+      position: absolute; top: 20px; right: 20px;
+      background: none; border: none; color: var(--text-muted);
+      font-size: 18px; cursor: pointer; padding: 8px; line-height: 1;
+      transition: color 0.2s;
+    }
+    .mobile-menu-close:hover { color: var(--gold); }
+    .mobile-menu ul { list-style: none; display: flex; flex-direction: column; gap: 0; }
+    .mobile-menu ul li a {
+      display: block;
+      color: var(--ivory);
+      text-decoration: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 300;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(200,166,106,0.12);
+      transition: color 0.3s, padding-left 0.3s;
+    }
+    .mobile-menu ul li:last-child a { border-bottom: none; }
+    .mobile-menu ul li a:hover { color: var(--gold); padding-left: 8px; }
+
+    .mobile-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 199;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(2px);
+    }
+    .mobile-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* ─── PAGE HERO ─── */
+    .page-hero {
+      padding-top: 76px;
+      min-height: 380px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding-bottom: 72px;
+      padding-left: 60px; padding-right: 60px;
+      position: relative;
+      overflow: hidden;
+      background: var(--black2);
+      border-bottom: 1px solid var(--border);
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent, transparent 80px,
+        rgba(200,166,106,0.025) 80px,
+        rgba(200,166,106,0.025) 81px
+      );
+    }
+    .page-hero-bg-num {
+      position: absolute;
+      right: 60px; bottom: -20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(120px, 18vw, 220px);
+      font-weight: 300;
+      color: rgba(200,166,106,0.05);
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+    .page-hero-content { position: relative; z-index: 2; }
+    .page-hero-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 14px;
+      opacity: 0; animation: fadeUp 0.8s 0.3s ease forwards;
+    }
+    .page-hero-eyebrow::before {
+      content: ''; display: inline-block;
+      width: 30px; height: 1px; background: var(--gold);
+    }
+    .page-hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(44px, 6vw, 80px);
+      font-weight: 300;
+      line-height: 1.06;
+      color: var(--ivory);
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.8s 0.5s ease forwards;
+    }
+    .page-hero h1 em { font-style: italic; color: var(--gold); }
+    .page-hero-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 560px;
+      line-height: 1.85;
+      opacity: 0; animation: fadeUp 0.8s 0.7s ease forwards;
+    }
+
+    /* ─── SHARED SECTION ─── */
+    section { padding: 100px 60px; }
+
+    .section-tag {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .section-tag::before {
+      content: '';
+      display: inline-block;
+      width: 30px; height: 1px;
+      background: var(--gold);
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(34px, 3.5vw, 52px);
+      font-weight: 300;
+      line-height: 1.12;
+      color: var(--ivory);
+      margin-bottom: 20px;
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+    .divider {
+      width: 60px; height: 1px;
+      background: var(--gold);
+      margin-bottom: 36px;
+      opacity: 0.6;
+    }
+
+    /* ─── STORY SECTION ─── */
+    #story { background: var(--black2); }
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .story-text p {
+      color: var(--text-muted);
+      margin-bottom: 22px;
+      font-size: 15px;
+      line-height: 1.9;
+    }
+    .story-text p strong { color: var(--ivory); font-weight: 500; }
+
+    .story-right { display: flex; flex-direction: column; gap: 20px; padding-top: 52px; }
+
+    .highlight-card {
+      padding: 28px 28px;
+      border: 1px solid var(--border);
+      background: rgba(200,166,106,0.04);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .highlight-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 0; height: 3px;
+      background: var(--gold);
+      transition: width 0.4s ease;
+    }
+    .highlight-card:hover { border-color: rgba(200,166,106,0.5); background: rgba(200,166,106,0.07); }
+    .highlight-card:hover::before { width: 100%; }
+    .highlight-card-label {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .highlight-card-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      color: var(--ivory);
+      line-height: 1.3;
+    }
+    .highlight-card-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      background: var(--black);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 40px 60px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 0 20px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ─── TEAM / KEY PERSONNEL ─── */
+    #team { background: var(--black2); }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-top: 20px;
+    }
+    .team-card {
+      background: var(--black2);
+      padding: 32px 28px;
+      transition: background 0.3s;
+    }
+    .team-card:hover { background: rgba(200,166,106,0.06); }
+    .team-role {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .team-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 19px;
+      font-weight: 400;
+      color: var(--ivory);
+      line-height: 1.25;
+    }
+    .team-divider {
+      width: 24px; height: 1px;
+      background: var(--gold); opacity: 0.5;
+      margin: 14px 0;
+    }
+
+    /* ─── CAPABILITIES ─── */
+    #capabilities { background: var(--black); }
+    .cap-intro {
+      max-width: 560px;
+      color: var(--text-muted);
+      margin-bottom: 60px;
+      font-size: 15px;
+      line-height: 1.85;
+    }
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .cap-card {
+      background: var(--black);
+      padding: 44px 36px;
+      transition: background 0.3s;
+    }
+    .cap-card:hover { background: rgba(200,166,106,0.05); }
+    .cap-icon {
+      width: 36px; height: 36px;
+      margin-bottom: 24px;
+      color: var(--gold);
+    }
+    .cap-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      color: var(--ivory);
+      margin-bottom: 12px;
+    }
+    .cap-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* ─── EQUIPMENT ─── */
+    #equipment { background: var(--black2); }
+    .equip-intro {
+      max-width: 560px;
+      color: var(--text-muted);
+      margin-bottom: 52px;
+      font-size: 15px;
+    }
+    .equip-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .equip-item {
+      background: var(--black);
+      border: 1px solid transparent;
+      padding: 24px 24px;
+      display: flex; align-items: flex-start; gap: 16px;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .equip-item:hover { border-color: var(--border); background: rgba(200,166,106,0.04); }
+    .equip-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      color: rgba(200,166,106,0.25);
+      line-height: 1;
+      flex-shrink: 0;
+      width: 28px;
+    }
+    .equip-name {
+      font-size: 13px;
+      color: var(--ivory);
+      letter-spacing: 0.04em;
+      line-height: 1.5;
+      padding-top: 4px;
+    }
+    .equip-spec {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ─── CLIENTS / PROJECTS ─── */
+    #clients { background: var(--black); }
+    .clients-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .client-list { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+    .client-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      background: rgba(200,166,106,0.03);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--ivory);
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .client-item:hover { border-color: var(--gold); background: rgba(200,166,106,0.08); }
+    .client-dot {
+      width: 5px; height: 5px;
+      background: var(--gold);
+      border-radius: 50%; flex-shrink: 0;
+    }
+
+    .projects-col {}
+    .projects-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .project-list { display: flex; flex-direction: column; gap: 0; }
+    .project-item {
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(200,166,106,0.12);
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .project-item:last-child { border-bottom: none; }
+    .project-dot {
+      width: 4px; height: 4px;
+      background: var(--gold); border-radius: 50%;
+      flex-shrink: 0; margin-top: 7px;
+    }
+    .project-name {
+      font-size: 13px;
+      color: var(--ivory);
+      line-height: 1.5;
+    }
+    .project-client {
+      font-size: 11px;
+      color: var(--gold);
+      margin-top: 2px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ─── BRANCHES ─── */
+    #branches { background: var(--black2); }
+    .branches-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-top: 48px;
+    }
+    .branch-card {
+      background: var(--black);
+      padding: 52px 48px;
+      border: 1px solid transparent;
+      position: relative; overflow: hidden;
+      transition: border-color 0.4s;
+    }
+    .branch-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 3px; height: 0;
+      background: var(--gold);
+      transition: height 0.4s ease;
+    }
+    .branch-card:hover { border-color: var(--border); }
+    .branch-card:hover::before { height: 100%; }
+    .branch-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 72px; font-weight: 300;
+      color: rgba(200,166,106,0.08); line-height: 1;
+      margin-bottom: -16px;
+    }
+    .branch-city {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 400;
+      color: var(--ivory); margin-bottom: 8px;
+    }
+    .branch-sub {
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 22px;
+    }
+    .branch-text {
+      font-size: 14px; color: var(--text-muted); line-height: 1.8;
+    }
+    .branch-detail { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+    .branch-detail-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 13px; color: var(--sand);
+    }
+    .branch-detail-row span:first-child {
+      color: var(--gold); font-size: 10px; letter-spacing: 0.1em;
+      text-transform: uppercase; min-width: 60px; padding-top: 2px;
+    }
+
+    /* ─── CONTACT STRIP ─── */
+    .contact-strip {
+      background: var(--gold);
+      padding: 64px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 40px;
+    }
+    .contact-strip-text h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px; font-weight: 400;
+      color: var(--black); line-height: 1.2;
+    }
+    .contact-strip-text p {
+      font-size: 13px;
+      color: rgba(28,28,28,0.65);
+      margin-top: 8px;
+    }
+    .btn-dark {
+      background: var(--black);
+      color: var(--ivory);
+      border: 1px solid var(--black);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 14px 36px;
+      cursor: pointer; text-decoration: none;
+      display: inline-block; white-space: nowrap;
+      transition: background 0.3s, color 0.3s;
+      flex-shrink: 0;
+    }
+    .btn-dark:hover { background: var(--black2); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #111111;
+      border-top: 1px solid var(--border);
+      padding: 60px 60px 36px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 52px;
+    }
+    .footer-logo img { height: 40px; object-fit: contain; margin-bottom: 20px; }
+    .footer-tagline {
+      font-size: 13px; color: var(--text-muted);
+      line-height: 1.75; max-width: 240px;
+    }
+    .footer-col h4 {
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a {
+      font-size: 13px; color: var(--text-muted);
+      text-decoration: none; transition: color 0.3s;
+    }
+    .footer-col ul li a:hover { color: var(--ivory); }
+    .footer-contact { display: flex; flex-direction: column; gap: 12px; }
+    .footer-contact-row { display: flex; gap: 10px; font-size: 13px; }
+    .footer-contact-row .lbl {
+      color: var(--gold); font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; min-width: 50px; padding-top: 3px;
+    }
+    .footer-contact-row .val { color: var(--text-muted); line-height: 1.6; }
+    .footer-contact-row a { color: var(--text-muted); text-decoration: none; }
+    .footer-contact-row a:hover { color: var(--gold); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 28px;
+      border-top: 1px solid rgba(200,166,106,0.12);
+      font-size: 11px; color: rgba(245,243,238,0.3);
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── RESPONSIVE 900px ─── */
+    @media (max-width: 900px) {
+      nav { padding: 0 20px; height: 68px; }
+      nav.scrolled { height: 58px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      .page-hero { padding: 76px 20px 56px; min-height: 300px; }
+      .page-hero-bg-num { display: none; }
+      section { padding: 72px 20px; }
+      .story-grid { grid-template-columns: 1fr; gap: 40px; }
+      .story-right { padding-top: 0; }
+      .stats-bar { grid-template-columns: repeat(2,1fr); padding: 32px 20px; gap: 0; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 20px 12px; }
+      .stat-item:nth-child(odd) { border-right: 1px solid var(--border); }
+      .stat-item:nth-child(3), .stat-item:nth-child(4) { border-bottom: none; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .cap-grid { grid-template-columns: 1fr; }
+      .equip-grid { grid-template-columns: 1fr 1fr; }
+      .clients-layout { grid-template-columns: 1fr; gap: 48px; }
+      .branches-grid { grid-template-columns: 1fr; }
+      .branch-card { padding: 36px 24px; }
+      .contact-strip { flex-direction: column; gap: 24px; padding: 44px 20px; }
+      .contact-strip-text h2 { font-size: 26px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+      footer { padding: 48px 20px 28px; }
+      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    }
+
+    /* ─── RESPONSIVE 480px ─── */
+    @media (max-width: 480px) {
+      nav { padding: 0 16px; height: 62px; }
+      .nav-logo img { height: 46px !important; }
+      .page-hero { padding: 72px 16px 48px; }
+      .page-hero h1 { font-size: clamp(36px, 10vw, 56px); }
+      section { padding: 56px 16px; }
+      .section-title { font-size: clamp(28px, 8vw, 40px); }
+      .stats-bar { padding: 24px 16px; }
+      .stat-num { font-size: 30px; }
+      .team-grid { grid-template-columns: 1fr; }
+      .cap-card { padding: 28px 18px; }
+      .equip-grid { grid-template-columns: 1fr; }
+      .branch-card { padding: 28px 18px; }
+      .branch-num { font-size: 52px; }
+      .branch-city { font-size: 22px; }
+      .contact-strip { padding: 36px 16px; }
+      .contact-strip-text h2 { font-size: 22px; }
+      .btn-dark { width: 100%; text-align: center; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      footer { padding: 40px 16px 24px; }
+      .footer-bottom { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <svg class="loader-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="8" y="8" width="64" height="64" fill="#262626" stroke="#C8A66A" stroke-width="1"/>
+    <g transform="translate(40,40) rotate(45)">
+      <rect x="-22" y="-22" width="14" height="14" fill="#C8A66A" opacity="0.9"/>
+      <rect x="-6"  y="-22" width="14" height="14" fill="#C8A66A" opacity="0.65"/>
+      <rect x="8"   y="-22" width="14" height="14" fill="#C8A66A" opacity="0.4"/>
+      <rect x="-22" y="-6"  width="14" height="14" fill="#E0E0E0" opacity="0.8"/>
+      <rect x="-6"  y="-6"  width="14" height="14" fill="#C8A66A" opacity="0.75"/>
+      <rect x="8"   y="-6"  width="14" height="14" fill="#E0E0E0" opacity="0.55"/>
+      <rect x="-22" y="8"   width="14" height="14" fill="#C8A66A" opacity="0.5"/>
+      <rect x="-6"  y="8"   width="14" height="14" fill="#E0E0E0" opacity="0.7"/>
+      <rect x="8"   y="8"   width="14" height="14" fill="#C8A66A" opacity="0.3"/>
+    </g>
+  </svg>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo" style="text-decoration:none;">
+    <img src="TAMARA_STEEL_LLC.png" alt="Tamara Steel LLC" style="height:60px;width:auto;" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="about.html" class="active">About Us</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="product.html">Products / Gallery</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:dubai@tamarasteel.com" class="nav-cta">Get In Touch</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileClose" aria-label="Close menu">✕</button>
+  <ul>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="product.html">Products / Gallery</a></li>
+    <li><a href="index.html#contact">Get In Touch</a></li>
+  </ul>
+</div>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-bg-num">2023</div>
+  <div class="page-hero-content">
+    <p class="page-hero-eyebrow">Established 2023 · Dubai &amp; Sharjah, UAE</p>
+    <h1>About<br><em>Tamara Steel</em></h1>
+    <p class="page-hero-desc">A company built on decades of combined expertise, driven by an unwavering commitment to structural precision and client excellence across the United Arab Emirates.</p>
+  </div>
+</div>
+
+<!-- STORY -->
+<section id="story">
+  <div class="story-grid">
+    <div class="story-text reveal">
+      <div class="section-tag">Our Story</div>
+      <h2 class="section-title">Built on Trust,<br><em>Driven by Precision</em></h2>
+      <div class="divider"></div>
+      <p><strong>Tamara Steel LLC</strong> was founded in 2023 as an independent entity, originating from Al Huraiz Steel, to take over its projects and related activities. The company was created with a clear goal: to expand operations and meet the growing demands of the UAE's construction market.</p>
+      <p>From the outset, Tamara Steel quickly earned recognition and trust among major clients across the region — including top developers like EMAAR, DAMAC, Dubai Holdings, Nakheel, and Majid Al Futtaim Properties.</p>
+      <p>The company's strength lies in its deep design capabilities, engineering expertise, and a results-driven approach to every project. <strong>The same dedicated team</strong> that handled design, engineering, and project execution under Al Huraiz Steel continues these responsibilities under Tamara Steel — including fulfilling the obligations of previously completed projects.</p>
+      <p>In 2024, Tamara Steel expanded its operations with the opening of a new factory located in Sajjah Industrial Oasis, Sharjah — launched to further strengthen its structural fabrication capabilities and meet increasing market demand.</p>
+    </div>
+    <div class="story-right reveal">
+      <div class="highlight-card">
+        <div class="highlight-card-label">Founded</div>
+        <div class="highlight-card-value">2023 — Dubai, UAE</div>
+        <div class="highlight-card-sub">Originating from Al Huraiz Steel, carrying forward its legacy of excellence</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-card-label">Factory Expansion</div>
+        <div class="highlight-card-value">2024 — Sajjah Industrial Oasis</div>
+        <div class="highlight-card-sub">Sharjah branch opened to strengthen large-scale fabrication capabilities</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-card-label">Mission</div>
+        <div class="highlight-card-value">Precision. Integrity. Excellence.</div>
+        <div class="highlight-card-sub">Delivering the highest standards of structural fabrication support for clients and contractors</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-card-label">Licensed &amp; Certified</div>
+        <div class="highlight-card-value">Dubai &amp; Sharjah Trade Licences</div>
+        <div class="highlight-card-sub">Fully licensed under UAE authorities including SEDD for the Sharjah branch</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item reveal">
+    <div class="stat-num">2</div>
+    <div class="stat-label">UAE Branches</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">103+</div>
+    <div class="stat-label">Skilled Workforce</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">20+</div>
+    <div class="stat-label">Projects Delivered</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">5+</div>
+    <div class="stat-label">Major Developer Clients</div>
+  </div>
+</div>
+
+<!-- KEY PERSONNEL -->
+<section id="team">
+  <div class="section-tag">Our People</div>
+  <h2 class="section-title">The Team Behind<br><em>Every Project</em></h2>
+  <div class="divider"></div>
+  <p class="cap-intro">Our leadership team brings together decades of combined experience in structural engineering, design, project management, and operations — ensuring every project is delivered with precision and care.</p>
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="team-role">Managing Director</div>
+      <div class="team-name">Saju K C</div>
+      <div class="team-divider"></div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-role">Operations Manager</div>
+      <div class="team-name">Ramesh Babu A</div>
+      <div class="team-divider"></div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-role">Manager — Projects</div>
+      <div class="team-name">Krishnalal P M</div>
+      <div class="team-divider"></div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-role">Finance Manager</div>
+      <div class="team-name">Aravind</div>
+      <div class="team-divider"></div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-role">Senior Structural Engineer</div>
+      <div class="team-name">Mohammed Siddique</div>
+      <div class="team-divider"></div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-role">Engineering &amp; Design</div>
+      <div class="team-name">Mohammed Aslam</div>
+      <div class="team-divider"></div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-role">Project Engineer</div>
+      <div class="team-name">Mohammed Ali</div>
+      <div class="team-divider"></div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-role">Project Engineer</div>
+      <div class="team-name">Aneesh Raveendran</div>
+      <div class="team-divider"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITIES -->
+<section id="capabilities">
+  <div class="section-tag">What We Do</div>
+  <h2 class="section-title">Our <em>Capabilities</em></h2>
+  <div class="divider"></div>
+  <p class="cap-intro">From concept to completion, Tamara Steel delivers comprehensive structural steel solutions backed by deep engineering expertise and a commitment to precision at every stage.</p>
+  <div class="cap-grid">
+    <div class="cap-card reveal">
+      <svg class="cap-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2">
+        <rect x="4" y="4" width="28" height="28" rx="1"/>
+        <path d="M4 13h28M4 22h28M13 4v28M22 4v28"/>
+      </svg>
+      <div class="cap-name">Structural Fabrication</div>
+      <p class="cap-desc">Large-scale steel structural fabrication for commercial, residential, and infrastructure projects across the UAE — executed at our Sharjah factory.</p>
+    </div>
+    <div class="cap-card reveal">
+      <svg class="cap-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M6 30L18 6l12 24"/>
+        <path d="M10 22h16"/>
+        <circle cx="18" cy="6" r="2"/>
+      </svg>
+      <div class="cap-name">Design &amp; Engineering</div>
+      <p class="cap-desc">Expert structural design and engineering services ensuring integrity, compliance, and aesthetic precision — supported by senior engineers and CAD specialists.</p>
+    </div>
+    <div class="cap-card reveal">
+      <svg class="cap-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2">
+        <rect x="4" y="14" width="28" height="18" rx="1"/>
+        <path d="M12 14V9a6 6 0 0 1 12 0v5"/>
+        <circle cx="18" cy="23" r="2"/>
+      </svg>
+      <div class="cap-name">Custom Solutions</div>
+      <p class="cap-desc">Bespoke fabrication solutions — from solar shade structures to toilet blocks and tensile shades — tailored precisely to client requirements.</p>
+    </div>
+    <div class="cap-card reveal">
+      <svg class="cap-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2">
+        <circle cx="18" cy="18" r="12"/>
+        <path d="M18 6v12l7 7"/>
+      </svg>
+      <div class="cap-name">Project Management</div>
+      <p class="cap-desc">End-to-end project oversight ensuring on-time delivery, quality control, and seamless coordination from design through to final handover.</p>
+    </div>
+    <div class="cap-card reveal">
+      <svg class="cap-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M4 28h28M8 28V16l10-8 10 8v12"/>
+        <rect x="14" y="20" width="8" height="8"/>
+      </svg>
+      <div class="cap-name">Commercial &amp; Residential</div>
+      <p class="cap-desc">Proven experience across commercial towers, residential communities, parks, and infrastructure with the UAE's leading property developers.</p>
+    </div>
+    <div class="cap-card reveal">
+      <svg class="cap-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M4 18h4l4-10 6 20 4-14 4 8 4-4"/>
+      </svg>
+      <div class="cap-name">Quality Assurance</div>
+      <p class="cap-desc">Rigorous QA processes and material approval standards that meet the expectations of the region's most prestigious developers and clients.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPMENT -->
+<section id="equipment">
+  <div class="section-tag">Our Factory</div>
+  <h2 class="section-title">Machinery &amp; <em>Equipment</em></h2>
+  <div class="divider"></div>
+  <p class="equip-intro">Our Sharjah factory at Sajjah Industrial Oasis is equipped with industry-leading CNC machinery and fabrication equipment capable of handling the most demanding structural projects.</p>
+  <div class="equip-grid">
+    <div class="equip-item reveal">
+      <div class="equip-num">01</div>
+      <div><div class="equip-name">CNC Waterjet</div><div class="equip-spec">Up to 80mm thickness — Italian made</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">02</div>
+      <div><div class="equip-name">CNC Press Brake</div><div class="equip-spec">3M length capacity — 10mm MS</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">03</div>
+      <div><div class="equip-name">CNC Spinning ×2</div><div class="equip-spec">Prosper — 2.4M length, 3mm MS</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">04</div>
+      <div><div class="equip-name">Shearing Machine</div><div class="equip-spec">3M length capacity</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">05</div>
+      <div><div class="equip-name">Iron Worker</div><div class="equip-spec">Turkish made</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">06</div>
+      <div><div class="equip-name">Aluminum Router ×2</div><div class="equip-spec">Italian made</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">07</div>
+      <div><div class="equip-name">MIG Welding Machines</div><div class="equip-spec">Miller — industrial grade</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">08</div>
+      <div><div class="equip-name">TIG &amp; Arc Welding</div><div class="equip-spec">Full welding suite</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">09</div>
+      <div><div class="equip-name">Plasma Cutting (Portable)</div><div class="equip-spec">On-site and in-factory use</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">10</div>
+      <div><div class="equip-name">Radial Drilling &amp; Milling</div><div class="equip-spec">Indian made precision machinery</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">11</div>
+      <div><div class="equip-name">Bandsaw Machines</div><div class="equip-spec">Horizontal &amp; vertical — UK made</div></div>
+    </div>
+    <div class="equip-item reveal">
+      <div class="equip-num">12</div>
+      <div><div class="equip-name">Compressor &amp; Generator</div><div class="equip-spec">Supporting full factory operations</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENTS & PROJECTS -->
+<section id="clients">
+  <div class="clients-layout">
+    <div>
+      <div class="section-tag">Trusted By</div>
+      <h2 class="section-title">Our <em>Clients</em></h2>
+      <div class="divider"></div>
+      <p style="color:var(--text-muted);font-size:14px;line-height:1.85;margin-bottom:28px;">We are proud to have earned the trust of the UAE's most prominent developers and government entities through consistent quality, reliability, and precision on every project.</p>
+      <div class="client-list">
+        <div class="client-item reveal"><div class="client-dot"></div>EMAAR Properties</div>
+        <div class="client-item reveal"><div class="client-dot"></div>DAMAC Properties</div>
+        <div class="client-item reveal"><div class="client-dot"></div>Dubai Holdings</div>
+        <div class="client-item reveal"><div class="client-dot"></div>Nakheel</div>
+        <div class="client-item reveal"><div class="client-dot"></div>Majid Al Futtaim Properties</div>
+        <div class="client-item reveal"><div class="client-dot"></div>Dubai Municipality</div>
+        <div class="client-item reveal"><div class="client-dot"></div>DEWA (Dubai Electricity &amp; Water Authority)</div>
+        <div class="client-item reveal"><div class="client-dot"></div>DP World</div>
+      </div>
+    </div>
+    <div class="projects-col reveal">
+      <div class="projects-label">Selected Projects</div>
+      <div class="project-list">
+        <div class="project-item">
+          <div class="project-dot"></div>
+          <div>
+            <div class="project-name">Mohammed Bin Rashid Library — Solar Carport</div>
+            <div class="project-client">Dubai Municipality</div>
+          </div>
+        </div>
+        <div class="project-item">
+          <div class="project-dot"></div>
+          <div>
+            <div class="project-name">2MW Solar Carport Project at DEWA HQ</div>
+            <div class="project-client">DEWA</div>
+          </div>
+        </div>
+        <div class="project-item">
+          <div class="project-dot"></div>
+          <div>
+            <div class="project-name">Solar Structure — Al Quoz Community Park</div>
+            <div class="project-client">Dubai Municipality</div>
+          </div>
+        </div>
+        <div class="project-item">
+          <div class="project-dot"></div>
+          <div>
+            <div class="project-name">The Valley Phase 1A, 1B &amp; 1C</div>
+            <div class="project-client">EMAAR</div>
+          </div>
+        </div>
+        <div class="project-item">
+          <div class="project-dot"></div>
+          <div>
+            <div class="project-name">Toilet Blocks — Damac Hills (Akoya Oxygen)</div>
+            <div class="project-client">DAMAC Properties</div>
+          </div>
+        </div>
+        <div class="project-item">
+          <div class="project-dot"></div>
+          <div>
+            <div class="project-name">Al Zahia — Camelia and Orchid</div>
+            <div class="project-client">Majid Al Futtaim Properties</div>
+          </div>
+        </div>
+        <div class="project-item">
+          <div class="project-dot"></div>
+          <div>
+            <div class="project-name">Arabian Ranches 3 Development</div>
+            <div class="project-client">EMAAR</div>
+          </div>
+        </div>
+        <div class="project-item">
+          <div class="project-dot"></div>
+          <div>
+            <div class="project-name">Gate 1 Development — Hamriya Port</div>
+            <div class="project-client">DP World</div>
+          </div>
+        </div>
+        <div class="project-item">
+          <div class="project-dot"></div>
+          <div>
+            <div class="project-name">Tensile Shade — Al Ghusais Park</div>
+            <div class="project-client">Dubai Municipality</div>
+          </div>
+        </div>
+        <div class="project-item">
+          <div class="project-dot"></div>
+          <div>
+            <div class="project-name">Solar Shade — Naad Al Sheba Park</div>
+            <div class="project-client">Dubai Municipality</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRANCHES -->
+<section id="branches">
+  <div class="section-tag">Our Locations</div>
+  <h2 class="section-title">Two Branches,<br><em>One Standard of Excellence</em></h2>
+  <div class="divider"></div>
+  <div class="branches-grid">
+    <div class="branch-card reveal">
+      <div class="branch-num">01</div>
+      <div class="branch-city">Dubai</div>
+      <div class="branch-sub">Head Office — Tamara Steel LLC</div>
+      <p class="branch-text">Tamara Steel's Dubai branch serves as the company's headquarters, overseeing major structural fabrication projects across the emirate. The Dubai office is the operational centre for client relations, project management, and design engineering.</p>
+      <div class="branch-detail">
+        <div class="branch-detail-row"><span>Est.</span><span>2023</span></div>
+        <div class="branch-detail-row"><span>Focus</span><span>Structural Fabrication, Client Relations, Project Management</span></div>
+        <div class="branch-detail-row"><span>Email</span><span>dubai@tamarasteel.com</span></div>
+      </div>
+    </div>
+    <div class="branch-card reveal">
+      <div class="branch-num">02</div>
+      <div class="branch-city">Sharjah</div>
+      <div class="branch-sub">Factory — Sajjah Industrial Oasis</div>
+      <p class="branch-text">Opened in 2024, the Sharjah facility at Sajjah Industrial Oasis was established to strengthen Tamara Steel's structural fabrication capabilities and meet increasing market demand. This factory specialises in large-scale fabrication with customised solutions tailored to each client's requirements.</p>
+      <div class="branch-detail">
+        <div class="branch-detail-row"><span>Est.</span><span>2024</span></div>
+        <div class="branch-detail-row"><span>Location</span><span>Sajjah Industrial Oasis, Sharjah</span></div>
+        <div class="branch-detail-row"><span>Focus</span><span>Large-Scale Structural Fabrication &amp; Custom Solutions</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT STRIP -->
+<div class="contact-strip">
+  <div class="contact-strip-text">
+    <h2>Ready to start your next project?</h2>
+    <p>Our team is ready to bring your structural vision to life.</p>
+  </div>
+  <a href="mailto:dubai@tamarasteel.com" class="btn-dark">Contact Us Today</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">
+        <img src="TAMARA_STEEL_LLC.png" alt="Tamara Steel LLC" />
+      </div>
+      <p class="footer-tagline">Premium structural steel fabrication across Dubai and Sharjah. Built on precision, delivered with integrity.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="product.html">Products / Gallery</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Branches</h4>
+      <ul>
+        <li><a href="#branches">Dubai — Head Office</a></li>
+        <li><a href="#branches">Sharjah — Sajjah Industrial Oasis</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="footer-contact">
+        <div class="footer-contact-row">
+          <span class="lbl">Email</span>
+          <span class="val"><a href="mailto:dubai@tamarasteel.com">dubai@tamarasteel.com</a></span>
+        </div>
+        <div class="footer-contact-row">
+          <span class="lbl">UAE</span>
+          <span class="val">United Arab Emirates</span>
+        </div>
+        <div class="footer-contact-row">
+          <span class="lbl">Est.</span>
+          <span class="val">2023</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Tamara Steel LLC. All rights reserved.</span>
+    <span>Dubai &nbsp;·&nbsp; Sharjah &nbsp;·&nbsp; UAE</span>
+  </div>
+</footer>
+
+<script>
+  // Loader
+  window.addEventListener('load', () => {
+    setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1800);
+  });
+
+  // Nav scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Mobile menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  const mobileClose = document.getElementById('mobileClose');
+
+  function openMenu() {
+    mobileMenu.classList.add('open');
+    mobileOverlay.classList.add('open');
+    hamburger.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    mobileMenu.classList.remove('open');
+    mobileOverlay.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileOverlay.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 70);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
