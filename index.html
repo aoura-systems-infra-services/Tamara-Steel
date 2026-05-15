@@ -637,17 +637,143 @@
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 900px) {
-      nav { padding: 0 24px; }
+      nav { padding: 0 20px; height: 68px; }
+      nav.scrolled { height: 58px; }
       .nav-links { display: none; }
-      .hero { padding: 0 24px 72px; }
-      section { padding: 72px 24px; }
-      .stats-bar { grid-template-columns: repeat(2,1fr); padding: 36px 24px; gap: 24px; }
-      .stat-item { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 24px; }
-      .about-grid, .branches-grid, .services-grid, .location-grid { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-      .contact-strip { flex-direction: column; text-align: left; }
-      #location { padding: 60px 24px; }
-      footer { padding: 48px 24px 28px; }
+      .nav-cta { padding: 9px 18px; font-size: 10px; }
+      .hero { padding: 0 20px 80px; min-height: 100svh; }
+      .hero-content { max-width: 100%; }
+      .hero-scroll { right: 20px; bottom: 28px; }
+      section { padding: 72px 20px; }
+      .stats-bar {
+        grid-template-columns: repeat(2,1fr);
+        padding: 32px 20px;
+        gap: 0;
+      }
+      .stat-item {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 20px 12px;
+      }
+      .stat-item:nth-child(odd) { border-right: 1px solid var(--border); }
+      .stat-item:nth-child(3),
+      .stat-item:nth-child(4) { border-bottom: none; }
+      .stat-num { font-size: 34px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-right { padding-top: 0; }
+      .branches-grid { grid-template-columns: 1fr; gap: 2px; }
+      .branch-card { padding: 36px 24px; }
+      .branch-num { font-size: 52px; }
+      .services-grid { grid-template-columns: 1fr; gap: 1px; }
+      .service-card { padding: 32px 24px; }
+      .location-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+      .contact-strip { flex-direction: column; gap: 24px; padding: 44px 20px; }
+      .contact-strip-text h2 { font-size: 26px; }
+      #location { padding: 60px 20px; }
+      .map-wrap { height: 280px; }
+      footer { padding: 48px 20px 28px; }
+      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      nav { padding: 0 16px; height: 62px; }
+      .nav-logo img { height: 46px !important; }
+      .nav-cta { padding: 8px 14px; font-size: 10px; letter-spacing: 0.1em; }
+      .hero { padding: 0 16px 72px; }
+      .hero h1 { font-size: clamp(38px, 11vw, 60px); }
+      .hero-desc { font-size: 14px; margin-bottom: 36px; }
+      .hero-actions { flex-direction: column; gap: 12px; }
+      .btn-primary, .btn-secondary { width: 100%; text-align: center; padding: 14px 24px; }
+      .hero-eyebrow { font-size: 10px; letter-spacing: 0.16em; }
+      .hero-scroll { display: none; }
+      section { padding: 56px 16px; }
+      .section-title { font-size: clamp(28px, 8vw, 40px); }
+      .stats-bar { padding: 24px 16px; }
+      .stat-num { font-size: 30px; }
+      .stat-label { font-size: 9px; }
+      .branch-card { padding: 28px 18px; }
+      .branch-city { font-size: 24px; }
+      .service-card { padding: 28px 18px; }
+      .about-badges { gap: 8px; }
+      .badge { font-size: 9px; padding: 7px 12px; }
+      .client-item { font-size: 12px; padding: 14px 16px; }
+      .contact-strip { padding: 36px 16px; }
+      .contact-strip-text h2 { font-size: 22px; }
+      .btn-dark { width: 100%; text-align: center; }
+      .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+      .footer-logo img { height: 36px !important; }
+      footer { padding: 40px 16px 24px; }
+      .map-wrap { height: 240px; }
+      #location { padding: 48px 16px; }
+      .location-info h3 { font-size: 20px; }
+      .footer-bottom { font-size: 10px; }
+      .divider { margin-bottom: 28px; }
+    }
+    /* ─── MOBILE MENU ─── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column; justify-content: center; gap: 5px;
+      background: none; border: none; cursor: pointer;
+      padding: 6px; width: 38px; height: 38px;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 1.5px;
+      background: var(--ivory);
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+    .mobile-menu {
+      position: fixed; top: 0; right: -100%; width: min(300px, 85vw);
+      height: 100vh; height: 100svh;
+      background: #111111;
+      border-left: 1px solid var(--border);
+      z-index: 200;
+      padding: 80px 32px 40px;
+      display: flex; flex-direction: column;
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mobile-menu.open { right: 0; }
+    .mobile-menu-close {
+      position: absolute; top: 20px; right: 20px;
+      background: none; border: none; color: var(--text-muted);
+      font-size: 18px; cursor: pointer; padding: 8px; line-height: 1;
+      transition: color 0.2s;
+    }
+    .mobile-menu-close:hover { color: var(--gold); }
+    .mobile-menu ul { list-style: none; display: flex; flex-direction: column; gap: 0; }
+    .mobile-menu ul li a {
+      display: block;
+      color: var(--ivory);
+      text-decoration: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 300;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(200,166,106,0.12);
+      transition: color 0.3s, padding-left 0.3s;
+      letter-spacing: 0.02em;
+    }
+    .mobile-menu ul li:last-child a { border-bottom: none; }
+    .mobile-menu ul li a:hover { color: var(--gold); padding-left: 8px; }
+
+    .mobile-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 199;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+      backdrop-filter: blur(2px);
+    }
+    .mobile-overlay.open { opacity: 1; pointer-events: all; }
+
+    @media (max-width: 900px) {
+      .nav-hamburger { display: flex; }
+      .nav-cta { display: none; }
     }
   </style>
 </head>
@@ -675,17 +801,31 @@
 
 <!-- NAV -->
 <nav id="navbar">
-  <div class="nav-logo">
+  <a href="#home" class="nav-logo" style="text-decoration:none;">
     <img src="TAMARA_STEEL_LLC.png" alt="Tamara Steel LLC" style="height: 60px; width: auto;" />
-  </div>
+  </a>
   <ul class="nav-links">
-    <li><a href="#about">About Us</a></li>
+    <li><a href="about.html">About Us</a></li>
     <li><a href="#services">Services</a></li>
-    <li><a href="#branches">Products / Gallery</a></li>
-    <li><a href="#location">Contact</a></li>
+    <li><a href="product.html">Products / Gallery</a></li>
+    <li><a href="mailto:dubai@tamarasteel.com">Contact</a></li>
   </ul>
-  <button class="nav-cta" onclick="document.getElementById('location').scrollIntoView({behavior:'smooth'})">Get In Touch</button>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="mobileClose" aria-label="Close menu">✕</button>
+  <ul>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="product.html">Products / Gallery</a></li>
+    <li><a href="mailto:dubai@tamarasteel.com">Get In Touch</a></li>
+  </ul>
+</div>
+<div class="mobile-overlay" id="mobileOverlay"></div>
 
 <!-- HERO -->
 <section class="hero" id="home">
@@ -696,7 +836,7 @@
     <p class="hero-desc">Premium steel fabrication solutions for the region's most ambitious developments. Precision-engineered, beautifully delivered.</p>
     <div class="hero-actions">
       <a href="#services" class="btn-primary">Explore Services</a>
-      <a href="#about" class="btn-secondary">Our Story</a>
+      <a href="about.html" class="btn-secondary">Our Story</a>
     </div>
   </div>
   <div class="hero-scroll">
@@ -908,10 +1048,10 @@
       <h4>Navigation</h4>
       <ul>
         <li><a href="#home">Home</a></li>
-        <li><a href="#about">About Us</a></li>
+        <li><a href="about.html">About Us</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#branches">Products / Gallery</a></li>
-        <li><a href="#location">Contact</a></li>
+        <li><a href="product.html">Products / Gallery</a></li>
+        <li><a href="mailto:dubai@tamarasteel.com">Contact</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -958,6 +1098,30 @@
   window.addEventListener('scroll', () => {
     navbar.classList.toggle('scrolled', window.scrollY > 60);
   });
+
+  // Mobile menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  const mobileClose = document.getElementById('mobileClose');
+
+  function openMenu() {
+    mobileMenu.classList.add('open');
+    mobileOverlay.classList.add('open');
+    hamburger.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    mobileMenu.classList.remove('open');
+    mobileOverlay.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', openMenu);
+  mobileClose.addEventListener('click', closeMenu);
+  mobileOverlay.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
 
   // Reveal on scroll
   const reveals = document.querySelectorAll('.reveal');
